@@ -1,75 +1,53 @@
 package com.bankingprojectnew.Service;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.bankingprojectnew.Entity.Account;
-import com.bankingprojectnew.Entity.BankTransaction;
-import com.bankingprojectnew.Entity.BankTransactionType;
-import com.bankingprojectnew.Entity.Customer;
+import com.bankingprojectnew.Repository.AccountRepository;
+import com.bankingprojectnew.Repository.BankTransactionRepository;
 
+@Service
 public class BankingService {
+	
+	@Autowired 
+	private AccountRepository accountRepository;
+    @Autowired
+    private BankTransactionRepository bankTransactionRepository;
 
-    private static SessionFactory sessionFactory = new Configuration()
-            .addAnnotatedClass(Account.class)
-            .addAnnotatedClass(Customer.class)
-            .addAnnotatedClass(BankTransaction.class)
-            .configure()
-            .buildSessionFactory();
-    
-    public static void withdraw(int accountId, int amount) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        
-        Account account = session.get(Account.class, accountId);
-
-        if (account != null) { 
-            if (account.getAccountBalance() >= amount) {
-                account.setAccountBalance(account.getAccountBalance() - amount);
-
-                BankTransaction transaction = 
-                        new BankTransaction(BankTransactionType.WITHDRAWAL, amount, account);
-
-                session.persist(transaction);
-                session.merge(account);
-                
-                tx.commit();
-                System.out.println("Withdrawal of $" + amount + " from Account ID: " + accountId + " is successful.");
-            } else {
-                System.out.println("Insufficient balance! Withdrawal failed.");
-            }
-        } else {
-            System.out.println("Account not found!");
-        }
-        
-        session.close();
+    @Transactional
+    public String deposit(int accountId, int amount) {
+    	
+    	Optional<Account> optionalAccount= accountRepository.findById(accountId);
+    	if (optionalAccount.isPresent()) {
+    	    Account account = optionalAccount.get();
+    	    account.setAccountBalance(account.getAccountBalance()+amount);
+    	    accountRepository.save(account);
+    	    return "Deposit successful. New balance: $" + account.getAccountBalance();   
+    	} else {   
+    	    return("Account not found!");
+    	}	
     }
-
-    public static void deposit(int accountId, int amount) {
-        Session session = sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        
-        Account account = session.get(Account.class, accountId);
-
-        if (account != null) {
-            account.setAccountBalance(account.getAccountBalance() + amount);
-
-            BankTransaction transaction = 
-                    new BankTransaction(BankTransactionType.DEPOSIT, amount, account);
-
-            session.persist(transaction);
-            session.merge(account);
-            
-            tx.commit();
-            System.out.println("The amount successfully credited to your account!");
-            System.out.println("Updated Account Balance: $" + account.getAccountBalance());
-        } else {
-            System.out.println("Account not found!");
-        }
-        
-        session.close();
+    
+    @Transactional
+    public String withdraw(int accountId, int amount) {
+    	
+    	Optional<Account> optionalAccount= accountRepository.findById(accountId);
+    	if (optionalAccount.isPresent()) {
+    	    Account account = optionalAccount.get();
+    	    if(account.getAccountBalance()>=amount) {
+    	    account.setAccountBalance(account.getAccountBalance()-amount);
+    	    accountRepository.save(account);
+    	    return "Withdraw successful. New balance: $" + account.getAccountBalance();   
+    	    }
+    	    else {
+    	    	return("Account limit is lower than $"+amount);
+    	    }
+    	    
+    	    } else {   
+    	    return("Account not found!");
+    	}	
     }
 }
 
