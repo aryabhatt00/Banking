@@ -1,11 +1,16 @@
 package com.bankingprojectnew.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Account {
@@ -13,8 +18,14 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int accountId;
-    private int accountNumber;
-    private int accountBalance;
+    
+    @Column(unique = true)
+    private long accountNumber;
+
+    @Min(value = 0, message = "Balance must be non-negative")
+    private double accountBalance;
+
+    @JsonIgnore
 
     @OneToOne(mappedBy = "customerAccount")
     private Customer customer;
@@ -28,19 +39,19 @@ public class Account {
     public int getAccountId() {
         return accountId;
     }
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
+    public void setAccountId(int d) {
+        this.accountId = d;
     }
-    public int getAccountNumber() {
+    public long getAccountNumber() {
         return accountNumber;
     }
-    public void setAccountNumber(int accountNumber) {
-        this.accountNumber = accountNumber;
+    public void setAccountNumber(long generatedAccountNumber) {
+        this.accountNumber = generatedAccountNumber;
     }
-    public int getAccountBalance() {
+    public @Min(value = 0, message = "Balance must be non-negative") double getAccountBalance() {
         return accountBalance;
     }
-    public void setAccountBalance(int accountBalance) {
-        this.accountBalance = accountBalance;
+    public void setAccountBalance(double d) {
+        this.accountBalance = d;
     }
 }

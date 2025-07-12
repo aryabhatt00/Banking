@@ -1,18 +1,8 @@
 package com.bankingprojectnew.Entity;
 
-
 import java.util.Date;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 
 @Entity
 public class BankTransaction {
@@ -25,7 +15,7 @@ public class BankTransaction {
     @JoinColumn(name = "accountId")
     private Account transactionAccount;
     
-    private int transactionAmount;
+    private double transactionAmount;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Date transactionDate;
@@ -43,29 +33,55 @@ public class BankTransaction {
         this.transactionAccount = transactionAccount;
         this.transactionDate = new Date();
     }
-    
+    private double balanceAfterTransaction;
+
+    public double getBalanceAfterTransaction() {
+        return balanceAfterTransaction;
+    }
+
+    public void setBalanceAfterTransaction(double balanceAfterTransaction) {
+        this.balanceAfterTransaction = balanceAfterTransaction;
+    }
+
+
+    // Getters and Setters
     public int getTransactionId() {
         return transactionId;
     }
+
     public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
     }
+
     public Account getTransactionAccount() {
         return transactionAccount;
     }
+
     public void setTransactionAccount(Account transactionAccount) {
         this.transactionAccount = transactionAccount;
     }
-    public int getTransactionAmount() {
+
+    public double getTransactionAmount() {
         return transactionAmount;
     }
-    public void setTransactionAmount(int transactionAmount) {
-        this.transactionAmount = transactionAmount;
+
+    public void setTransactionAmount(double amount) {
+        this.transactionAmount = amount;
     }
+
     public Date getTransactionDate() {
         return transactionDate;
     }
+
     public void setTransactionDate(Date transactionDate) {
         this.transactionDate = transactionDate;
+    }
+
+    public BankTransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(BankTransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 }
