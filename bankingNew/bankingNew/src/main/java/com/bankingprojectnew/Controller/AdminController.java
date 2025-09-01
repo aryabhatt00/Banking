@@ -1,6 +1,9 @@
 package com.bankingprojectnew.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,4 +61,17 @@ public class AdminController {
             (tx.getTransactionAccount().getCustomer() != null) ? tx.getTransactionAccount().getCustomer().getCustomerName() : "N/A"
         )).collect(Collectors.toList());
     }
+    
+    @DeleteMapping("/account/{accountNumber}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> deleteAccount(@PathVariable Long accountNumber) {
+        boolean deleted = bankingService.deleteAccountByNumber(accountNumber);
+        if (deleted) {
+            return ResponseEntity.ok("Account deleted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found");
+        }
+    }
+
+
 }

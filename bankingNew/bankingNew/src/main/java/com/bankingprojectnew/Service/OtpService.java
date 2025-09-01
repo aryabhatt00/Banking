@@ -35,11 +35,11 @@ public class OtpService {
         String key = email + "_" + operation;
         otpStore.put(key, new OtpDetails(otp, expiryMillis));
 
-        // ✅ Logging for debug
+        //  Logging for debug
         System.out.println(">> Storing OTP key: " + key);
         System.out.println(">> OTP value: " + otp);
 
-        // ✅ Actually send the email
+        //  Actually send the email
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(email);
         message.setSubject("Your OTP for Transaction");

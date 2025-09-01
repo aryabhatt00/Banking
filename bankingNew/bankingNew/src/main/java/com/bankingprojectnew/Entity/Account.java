@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -17,7 +18,7 @@ public class Account {
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int accountId;
+    private long accountId;
     
     @Column(unique = true)
     private long accountNumber;
@@ -28,6 +29,7 @@ public class Account {
     @JsonIgnore
 
     @OneToOne(mappedBy = "customerAccount")
+    @JoinColumn(name = "account_id")
     private Customer customer;
     
     public Customer getCustomer() {
@@ -36,7 +38,7 @@ public class Account {
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
-    public int getAccountId() {
+    public long getAccountId() {
         return accountId;
     }
     public void setAccountId(int d) {

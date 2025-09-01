@@ -50,6 +50,7 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
             	    .requestMatchers(
+            	    	"/customer/find",
             	        "/auth/login",
             	        "/customer/create",
             	        "/bank/request-otp",

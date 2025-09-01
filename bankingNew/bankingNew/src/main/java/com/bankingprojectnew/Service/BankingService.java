@@ -20,6 +20,7 @@ import com.bankingprojectnew.Entity.BankTransactionType;
 import com.bankingprojectnew.Entity.OtpRecord;
 import com.bankingprojectnew.Repository.AccountRepository;
 import com.bankingprojectnew.Repository.BankTransactionRepository;
+import com.bankingprojectnew.Repository.CustomerRepository;
 
 @Service
 public class BankingService {
@@ -87,6 +88,8 @@ public class BankingService {
                 .orElseThrow(() -> new NoSuchElementException("Account not found"));
     }
     
+    
+    
     @Service
     public class OtpService {
         private final JavaMailSender mailSender;
@@ -124,6 +127,32 @@ public class BankingService {
             return (record != null && record.isVerified()) ? record : null;
         }
     }
+
+    @Autowired
+    private CustomerRepository customerRepository;
+    public boolean deleteAccountByNumber(long accountNumber) {
+        Optional<Account> accountOpt = accountRepository.findByAccountNumber(accountNumber);
+        
+        if (accountOpt.isPresent()) {
+            Account account = accountOpt.get();
+
+            // Delete all transactions related to this account
+            bankTransactionRepository.deleteByTransactionAccount(account);
+
+            // Remove customer if exists
+            if (account.getCustomer() != null) {
+                customerRepository.delete(account.getCustomer());
+            }
+
+            // Delete the account last
+            accountRepository.delete(account);
+            return true;
+        }
+
+        return false;
+    }
+
+
 
 
 }

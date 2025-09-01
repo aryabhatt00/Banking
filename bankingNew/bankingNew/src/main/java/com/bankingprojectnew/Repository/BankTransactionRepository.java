@@ -13,4 +13,6 @@ public interface BankTransactionRepository extends JpaRepository<BankTransaction
     List<BankTransaction> findByTransactionAccount_AccountNumber(long accountNumber);
 
     List<BankTransaction> findByTransactionAccount(Account account);
+    void deleteByTransactionAccount(Account account);
+
 }

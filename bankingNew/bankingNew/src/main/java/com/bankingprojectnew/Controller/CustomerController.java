@@ -39,7 +39,7 @@ public class CustomerController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    // ✅ 1. Create new customer
+    // 1. Create new customer
     @PostMapping("/create")
     public Map<String, Object> createCustomer(@RequestBody @Valid Customer customer) {
         boolean exists = customerRepository.existsByCustomerEmail(customer.getCustomerEmail())
@@ -69,7 +69,7 @@ public class CustomerController {
         return response;
     }
 
-    // ✅ 2. Find customer with questions
+    // 2. Find customer with questions
     @PostMapping("/find")
     public ResponseEntity<?> findCustomer(@RequestBody Map<String, Object> payload) {
         String email = (String) payload.get("email");
@@ -95,20 +95,20 @@ public class CustomerController {
             .body(Map.of("message", "Customer not found"));
     }
 
-    // ✅ 3. Get customer by ID
+    // 3. Get customer by ID
     @GetMapping("/{id}")
     public Object getCustomer(@PathVariable int id){
         Optional<Customer> customer = customerRepository.findById(id);
         return customer.orElseThrow(() -> new RuntimeException("Account not found"));
     }
 
-    // ✅ 4. Get all customers
+    // 4. Get all customers
     @GetMapping("/all")
     public List<Customer> getAllCustomers() {
         return customerRepository.findAll();
     }
 
-    // ✅ 5. Customer login — returns JWT token + name + email
+    // 5. Customer login — returns JWT token + name + email
     @PostMapping("/login")
     public ResponseEntity<?> loginCustomer(@RequestBody Map<String, String> request) {
         String email = request.get("email");
